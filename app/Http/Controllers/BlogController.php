@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BlogFilterRequest;
 use App\Models\Article;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -10,11 +11,20 @@ use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
-    public function index()
+    public function index() : View
     {
-        $articles = Article::paginate(25);
         return view('blog.index', [
-            'articles' => $articles
+            'articles' => Article::paginate(1)
+        ]);
+    }
+
+    public function show(string $slug, Article $article) : View | RedirectResponse
+    {
+        if($article->slug !== $slug) {
+            return redirect()->route('blog.show', ['slug' => $article->slug, 'id' => $article->id]);
+        }
+        return view('blog.show', [
+            'article' => $article
         ]);
     }
 
@@ -23,26 +33,36 @@ class BlogController extends Controller
         return view('blog.new');
     }
 
-    public function create(Request $request)
+    public function create(BlogFilterRequest $request)
     {
-        
-        $article = Article::create([
+        $article = Article::create($request->validated());
+
+        return redirect()->route('blog.show', ['slug' => $article->slug, 'article' => $article->id])->with('success', 'Article créé!');
+    }
+
+    public function modify(string $slug, Article $article) : View | RedirectResponse
+    {
+        if($article->slug !== $slug) {
+            return redirect()->route('blog.modify', ['slug' => $article->slug, 'article' => $article->id]);
+        }
+        return view('blog.modify', [
+            'article' => $article
+        ]);
+    }
+
+    public function update(Request $request, string $slug, Article $article) : RedirectResponse
+    {
+        if($article->slug !== $slug) {
+            return redirect()->route('blog.modify', ['slug' => $article->slug, 'id' => $article->id]);
+        }
+        $article->update([
             'title' => $request->input('title'),
             'slug' => Str::slug($request->input('title')),
             'content' => $request->input('content'),
         ]);
 
-        return redirect()->route('blog.show', ['slug' => $article->slug, 'id' => $article->id]);
+        return redirect()->route('blog.show', ['slug' => $article->slug, 'id' => $article->id])->with('success', 'Article modifié!');
     }
 
-    public function show(string $slug, string $id) : View | Article
-    {
-        $article = Article::findOrFail($id);
-        if($article->slug !== $slug) {
-            return redirect()->route('blog.show', ['slug' => $article->slug, 'id' => $article->id]);
-        }
-        return view('blog.show', [
-            'post' => $article
-        ]);
-    }
+
 }

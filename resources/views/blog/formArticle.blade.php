@@ -6,12 +6,18 @@
 
         <div class="form-group">
             <label for="titre">Titre :</label>
-            <input type="text" class="form-control" id="title" name="title" placeholder="Entrez le titre" required>
+            <input type="text" class="form-control" id="title" name="title" placeholder="Entrez le titre" value='{{ old('title') }}'>
+            @error('title')
+                <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="form-group">
             <label for="contenu">Contenu :</label>
-            <textarea class="form-control" id="content" name="content" rows="4" placeholder="Entrez le contenu" required></textarea>
+            <textarea class="form-control" id="content" name="content" rows="4" placeholder="Entrez le contenu" >{{  old('content') }}</textarea>
+            @error('content')
+                <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
         </div>
 
         <button type="submit" class="btn btn-primary">Enregistrer</button>

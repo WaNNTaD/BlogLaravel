@@ -1,8 +1,8 @@
 @extends('base')
 
-@section('title', 'Article')
+@section('title', $article->title)
 
 @section('content')
-    <h1>{{ $post->title }}</h1>
-    <p>{{ $post->content }}</p>
+    <h1>{{ $article->title }}</h1>
+    <p>{{ $article->content }}</p>
 @endsection
