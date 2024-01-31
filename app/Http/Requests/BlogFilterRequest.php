@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Support\Str;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class BlogFilterRequest extends FormRequest
 {
@@ -22,9 +23,10 @@ class BlogFilterRequest extends FormRequest
      */
     public function rules(): array
     {
+        $articleId = $this->route('article');
         return [
             'title' =>['required', 'min:8'],
-            'slug' => ['required', 'min:8', 'regex:/^[a-z0-9\-]+$/'],
+            'slug' => ['required', 'min:8', 'regex:/^[0-9a-z\-]+$/', Rule::unique('articles')->ignore($articleId)],
             'content' => ['required'],
         ];
     }
@@ -32,7 +34,7 @@ class BlogFilterRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'slug' => $this->input('slug') ?: Str::slug($this->input('title')),
+            'slug' => $this->slug ?: Str::slug($this->title),
         ]);
     }
 

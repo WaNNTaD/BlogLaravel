@@ -12,12 +12,8 @@ class Article extends Model
 
     protected $fillable = [ 'title', 'slug', 'content' ];
 
-    public static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($article) {
-            $article->slug = Str::slug($article->title);
-        });
-    }
+   public function categorie()
+   {
+       return $this->belongsTo(Categorie::class);
+   }
 }

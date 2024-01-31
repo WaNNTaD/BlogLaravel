@@ -50,18 +50,14 @@ class BlogController extends Controller
         ]);
     }
 
-    public function update(Request $request, string $slug, Article $article) : RedirectResponse
+    public function update(BlogFilterRequest $request, string $slug, Article $article) : RedirectResponse
     {
         if($article->slug !== $slug) {
-            return redirect()->route('blog.modify', ['slug' => $article->slug, 'id' => $article->id]);
+            return redirect()->route('blog.modify', ['slug' => $article->slug, 'article' => $article->id]);
         }
-        $article->update([
-            'title' => $request->input('title'),
-            'slug' => Str::slug($request->input('title')),
-            'content' => $request->input('content'),
-        ]);
+        $article->update($request->validated());
 
-        return redirect()->route('blog.show', ['slug' => $article->slug, 'id' => $article->id])->with('success', 'Article modifié!');
+        return redirect()->route('blog.show', ['slug' => $article->slug, 'article' => $article->id])->with('success', 'Article modifié!');
     }
 
 
