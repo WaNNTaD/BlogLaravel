@@ -28,6 +28,8 @@ class BlogFilterRequest extends FormRequest
             'title' =>['required', 'min:8'],
             'slug' => ['required', 'min:8', 'regex:/^[0-9a-z\-]+$/', Rule::unique('articles')->ignore($articleId)],
             'content' => ['required'],
+            'categorie_id' => ['required', 'exists:categories,id'],
+            'tags' => ['required', 'array', 'exists:tags,id'],
         ];
     }
 

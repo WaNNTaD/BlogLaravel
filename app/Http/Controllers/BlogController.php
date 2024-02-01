@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BlogFilterRequest;
 use App\Models\Article;
+use App\Models\Categorie;
+use App\Models\Tag;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
@@ -14,7 +16,7 @@ class BlogController extends Controller
     public function index() : View
     {
         return view('blog.index', [
-            'articles' => Article::paginate(1)
+            'articles' => Article::with('tags', 'categorie')->paginate(5)
         ]);
     }
 
@@ -46,7 +48,9 @@ class BlogController extends Controller
             return redirect()->route('blog.modify', ['slug' => $article->slug, 'article' => $article->id]);
         }
         return view('blog.modify', [
-            'article' => $article
+            'article' => $article,
+            'categories' => Categorie::select('id', 'name')->get(),
+            'tags' => Tag::select('id', 'name')->get()
         ]);
     }
 
@@ -55,8 +59,9 @@ class BlogController extends Controller
         if($article->slug !== $slug) {
             return redirect()->route('blog.modify', ['slug' => $article->slug, 'article' => $article->id]);
         }
+        $article->categorie()->associate(Categorie::find($request->validated('categorie_id')));
+        $article->tags()->sync($request->validated('tags'));
         $article->update($request->validated());
-
         return redirect()->route('blog.show', ['slug' => $article->slug, 'article' => $article->id])->with('success', 'Article modifié!');
     }
 

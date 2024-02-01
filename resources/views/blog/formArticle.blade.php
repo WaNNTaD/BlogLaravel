@@ -28,6 +28,35 @@
             @enderror
         </div>
 
+        <div class="form-group mb-3">
+            <label for="categorie">Catégorie :</label>
+            <select class="form-control" id="categorie_id" name="categorie_id">
+                <option value="">Choisissez une catégorie</option>
+                @foreach($categories as $categorie)
+                    <option @selected(old('categorie_id', $article->categorie_id) == $categorie->id) value="{{ $categorie->id }}" >{{ $categorie->name }}</option>
+                @endforeach
+            </select>
+            @error('categorie')
+                <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
+        </div>
+
+        @php
+            $tagsIds = $article->tags->pluck('id');
+        @endphp
+
+        <div class="form-group mb-3">
+            <label for="tags">Tags :</label>
+            <select class="form-control" id="tags" name="tags[]" multiple>
+                @foreach($tags as $tag)
+                    <option @selected($tagsIds->contains($tag->id)) value="{{ $tag->id }}">{{ $tag->name }}</option>
+                @endforeach
+            </select>
+            @error('tags')
+                <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
+        </div>
+
         @if (request()->route()->getName()=='blog.modify')
             <button type="submit" class="btn btn-primary">Modifier</button>
         @else
