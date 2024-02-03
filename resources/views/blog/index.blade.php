@@ -8,7 +8,7 @@
         <h2>{{ $article->title }}</h2>
         <p class="small">
             @if($article->categorie)
-                Catégorie: {{ $article->categorie?->name }}
+                Catégorie: {{ $article->categorie?->name }},
             @endif
         
             @if(!$article->tags->isEmpty())
@@ -18,6 +18,9 @@
                 @endforeach
             @endif
         </p>
+        @if($article->image)
+            <img style="width: 100%; height: 200px; object-fit: cover;" src="{{ $article->imageUrl() }}" alt="{{ $article->title }}" class="img-fluid">
+        @endif
         <p>{{ $article->content }}</p>
         <p><a href="{{ route('blog.show', ['slug' => $article->slug, 'article' => $article->id]) }}" class='btn btn-primary'>Lire la suite</a></p>
     @endforeach

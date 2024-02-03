@@ -29,6 +29,21 @@
                     <a @class(['nav-link', 'active' => request()->route()->getName()=='blog.new']) href="{{ route('blog.new') }}">Nouvel article</a>
                 </li>
             </ul>
+            <div class="navbar-nav ml-auto text-white"> <!-- Ajoutez la classe ml-auto ici -->
+                @auth
+                    {{ auth()->user()->name }}
+                    <form class="nav-item" action="{{ route('auth.logout') }}" method="post">
+                        @method('delete')
+                        @csrf
+                        <button type="submit" class="btn btn-link nav-link">Se déconnecter</button>
+                    </form>
+                @endauth
+                @guest
+                    <div class="nav-item">
+                        <a class="nav-link" href="{{ route('auth.login') }}">Se connecter</a>
+                    </div>
+                @endguest
+            </div>
         </div>
     </nav>
 

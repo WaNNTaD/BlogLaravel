@@ -30,6 +30,7 @@ class BlogFilterRequest extends FormRequest
             'content' => ['required'],
             'categorie_id' => ['required', 'exists:categories,id'],
             'tags' => ['required', 'array', 'exists:tags,id'],
+            'image' => ['image','max:2000']
         ];
     }
 
